@@ -19,7 +19,7 @@ Sıradan Bash kabuğundan sıkılanlar ve Arch Linux'un gücünü Kali Linux'un 
 Zsh kabuğunu ve gerekli eklentileri resmi Arch depolarından yükleyin:
 
 ```bash
-sudo pacman -S zsh zsh-syntax-highlighting zsh-autosuggestions zsh-completions
+sudo pacman -S zsh zsh-syntax-highlighting zsh-autosuggestions zsh-completions fzf
 ```
 
 ## 📦2. Adım: Çakışan Paketlerin Temizlenmesi
@@ -98,6 +98,45 @@ if [ -f /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.z
     source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 elif [ -f /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]; then
     source /usr/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+fi
+# --- 6. GELİŞMİŞ TUŞ BAĞLANTILARI (KEYBINDINGS) - Arch + Modern Terminal için ---
+# Ctrl+Left / Ctrl+Right → kelime atlama
+bindkey '^[[1;5C' forward-word   # Ctrl + Right
+bindkey '^[[1;5D' backward-word  # Ctrl + Left
+
+# Bazı terminaller (kitty, alacritty, wezterm) farklı sekans gönderir
+bindkey '^[[C' forward-word      # Bazen sadece Right bile yeter
+bindkey '^[[D' backward-word
+bindkey '^[OC' forward-word      # ESC + OC (bazı terminaller)
+bindkey '^[OD' backward-word
+
+# Alt+Left / Alt+Right (bazı kullanıcılar bunu da sever)
+bindkey '^[f' forward-word       # Alt + f (emacs stili)
+bindkey '^[b' backward-word      # Alt + b
+
+# Home / End tuşları düzgün çalışsın
+bindkey '^[[H' beginning-of-line # Home
+bindkey '^[[F' end-of-line       # End
+bindkey '^[[1~' beginning-of-line
+bindkey '^[[4~' end-of-line
+
+# Delete tuşu
+bindkey '^[[3~' delete-char
+
+# Ctrl+Backspace → bir kelime sil
+bindkey '^H' backward-kill-word   # Ctrl + Backspace
+bindkey '^[[3;5~' kill-word       # Ctrl + Delete
+
+# Ctrl+U → satırın başından imlece kadar sil (çok kullanışlı)
+bindkey '^U' backward-kill-line
+
+# Ctrl+W → bir kelime geri sil (bash gibi)
+bindkey '^W' backward-kill-word
+
+# Bonus: fzf ile geçmiş arama (eğer fzf kuruluysa, çok güzel olur)
+if command -v fzf >/dev/null 2>&1; then
+    source /usr/share/fzf/key-bindings.zsh 2>/dev/null || \
+    source /usr/share/doc/fzf/examples/key-bindings.zsh 2>/dev/null
 fi
 ```
 
